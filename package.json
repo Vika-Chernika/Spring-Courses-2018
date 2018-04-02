@@ -1,0 +1,22 @@
+{
+  "name": "todos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "^8.9.4"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "preferGlobal": true,
+  "bin": "./index.js",
+  "dependencies": {
+    "commander": "2.14.1",
+    "inquirer": "5.1.0",
+    "fs": "0.0.1-security",
+    "util": "0.10.3",
+    "path": "0.12.7"
+  }
+}
