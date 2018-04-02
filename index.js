@@ -10,7 +10,7 @@ program
     .description('This is a TODO application');
 
 const STORAGE_PATH = path.resolve('./mytodos.json');
-const ACCOUNT_ID = 1;
+const User_ID = 1;
 const { O_APPEND, O_RDONLY, O_CREAT } = fs.constants;
 
 const fsOpen = util.promisify(fs.open);
@@ -37,7 +37,7 @@ function saveAllTodos(todos) {
         });
 }
 
-
+//return -1 if id is not exists
 function findTodoIndex(id, todos) {
    return todos.findIndex((todo) => todo.id === id);
 }
@@ -55,17 +55,27 @@ function print(...args) {
     console.info(...args);
 }
 
+function getTodoItemById(id) {
+    let target;
+    return getAllTodos()
+        .then((todos) => {
+            const index = findTodoIndex(id, todos);
+            target = todos[index];
+            return target;
+        })
+        .then(() => target);
+}
 
 function createTodo(data) {
     const now = new Date();
     return {
         comment: null,
         createdDate: now,
-        createdByUserId: ACCOUNT_ID,
+        createdByUserId: User_ID,
         id: guid(),
         isLiked: false,
         lastUpdateDate: now,
-        lastUpdateByUserId: ACCOUNT_ID,
+        lastUpdateByUserId: User_ID,
         ...data,
     };
 }
@@ -75,7 +85,7 @@ function updateTodo(change, todo) {
         ...todo,
         ...change,
         lastUpdateDate: new Date(),
-        lastUpdateByUserId: ACCOUNT_ID,
+        lastUpdateByUserId: User_ID,
         createdDate: todo.createdDate,
         createdByUserId: todo.createdByUserId,
     };
@@ -177,6 +187,17 @@ program
     .action((id) => {
         prompt(updateQuestions)
             .then(({ title, description }) => updateTodoItem(id, { title, description }))
+            .then(print)
+            .catch((e) => {
+                throw e;
+            });
+    });
+
+program
+    .command('read <id>')
+    .description('Read TODO item')
+    .action((id) => {
+        getTodoItemById(id)
             .then(print)
             .catch((e) => {
                 throw e;
